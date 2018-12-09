@@ -10,7 +10,7 @@ inquire.prompt([
     }
 ]).then(function (user) {
     if (user.select) {
-        console.log("Let's play!")
+        console.log("\nLet's play!")
         main();
     } else {
         quit();
@@ -19,6 +19,7 @@ inquire.prompt([
 
 function main() {
 
+    var lives = 10;
     
     var possibleWords = [
         "skeleton",
@@ -28,10 +29,10 @@ function main() {
     ];
     
 
-    console.log("Picking a word...")
+    console.log("\nPicking a word...")
 
     var currentIndex = Math.floor(Math.random() * Math.floor(possibleWords.length));
-    console.log("# of possible words: " + possibleWords.length)
+  
     var wordsUsed = [];
     wordsUsed.push(currentIndex);
 
@@ -39,7 +40,7 @@ function main() {
     var lettersGuessed = [];
 
     function update() {
-        console.log(`Current situation:\n${currentWord.wordCheck()}\nLetters guess: ${lettersGuessed.join(" ")}`);
+        console.log(`\nCurrent situation:\n${currentWord.wordCheck()}\nLetters guessed: ${lettersGuessed.join(" ")}\n`);
 
         inquire.prompt([
             {
@@ -62,7 +63,20 @@ function main() {
         ]).then(function(user){
             console.log("\nYou guessed: " + user.guess);
             lettersGuessed.push(user.guess.toLowerCase());
+            var before = currentWord.leftToGuess();
             currentWord.guess(user.guess);
+            if(before > currentWord.leftToGuess()){
+                console.log("\x1b[32m%s\x1b[0m", "CORRECT!");
+                
+            }else{
+                console.log("\x1b[31m%s\x1b[0m", "INCORRECT!");
+                lives--;
+                console.log("Lives left: " + lives);
+                if(lives <= 0){
+                    console.log("You lost... Resetting...");
+                  main();
+                }
+            }
             if(currentWord.wordCheck().includes("_")){
                 update();
             }else{
@@ -76,7 +90,7 @@ function main() {
         console.log("\nWord guessed! " + currentWord.getWord());
         console.log("\nPicking next word...");
         if(wordsUsed.length === possibleWords.length){
-            console.log("You guessed every word!");
+            console.log("\nYou guessed every word!");
             quit();
         }else{
             var overFlow = 0;
@@ -89,6 +103,7 @@ function main() {
                 }
             }
             console.log("Updating...")
+            lives = 10;
             lettersGuessed = [];
             wordsUsed.push(currentIndex);
             currentWord = new Word(possibleWords[currentIndex]);

@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/mougatrah/word-guess-node-app#readme",
   "dependencies": {
-    "inquire": "^0.4.8",
     "inquirer": "^6.2.1"
   }
 }
